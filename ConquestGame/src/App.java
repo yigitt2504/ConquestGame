@@ -25,7 +25,6 @@ public class App {
 
         //Add a mechanic to see which province neighbors which.
 
-
         List<Countries> countriesList = new ArrayList<>();
         countriesList.add(england);
         countriesList.add(france);
@@ -98,9 +97,32 @@ public class App {
                         break;
 
                     case 3:
-                        System.out.println("Choose which province do you want to train your troops. ");
-                        //
+                        System.out.println("Choose which province do you want to train your troops in? ");
+                        String trainingProvince = scanner.nextLine();
+                        System.out.println("How many troops do you want to train? ");
+                        int troopsToTrain = scanner.nextInt();
+                        scanner.nextLine();
+                        System.out.println();
 
+                        Provinces trainingTarget = null;
+                        Countries playerCountry = null;
+
+                        for(Countries country : countriesList){
+                            for(Provinces province : country.getProvincesOwned()){
+                                if(province.getProvinceName().equalsIgnoreCase(trainingProvince)){
+                                    trainingTarget = province;
+                                    playerCountry = country;
+                                    break;
+                                }
+                            }
+                        }
+
+                        if(trainingTarget != null && playerCountry != null){
+                            trainingTarget.trainingTroops(troopsToTrain);
+                        }
+                        else{
+                            System.out.println("Invalid province! ");
+                        }
                         break;
 
                     case 4:
@@ -113,6 +135,7 @@ public class App {
                         System.out.println("You ended turn " + turn + " now AI will make it's move. ");
                         for(Countries country : countriesList){
                             country.generateIncome();
+                            System.out.println(country.country_name + " earned " + country.income + " gold. Your new balance is: " + country.gold);
                         }
 
                         //Implement enemies' moves here.
