@@ -9,6 +9,7 @@ public class App {
         Countries england = new Countries("England");
         Countries france = new Countries("France");
 
+
         Provinces london = new Provinces("London", 1000, england);
         Provinces paris = new Provinces("Paris", 1000, france);
         Provinces york = new Provinces("York", 1000, england);
@@ -17,6 +18,13 @@ public class App {
         england.addProvince(york);
         england.addProvince(london);
         france.addProvince(paris);
+
+
+        london.addNeighbor(york);
+        paris.addNeighbor(london);
+
+        //Add a mechanic to see which province neighbors which.
+
 
         List<Countries> countriesList = new ArrayList<>();
         countriesList.add(england);
@@ -50,8 +58,9 @@ public class App {
             System.out.println("Turn " + turn);
             System.out.println("1 to view your provinces. ");
             System.out.println("2 to view the situation in all nations. ");
-            System.out.println("3 to attack. ");
-            System.out.println("4 to end turn. ");
+            System.out.println("3 to train more troops. ");
+            System.out.println("4 to attack. ");
+            System.out.println("5 to end turn. ");
             System.out.println("'End' to end the game. ");
             System.out.println("Choose your action. ");
             
@@ -88,13 +97,30 @@ public class App {
                         }
                         break;
 
+                    case 3:
+                        System.out.println("Choose which province do you want to train your troops. ");
+                        //
+
+                        break;
+
                     case 4:
+                        System.out.println("");
+
+                        //The player needs to choose a friendly province and number of troops and then an enemy province to attack.
+                        break;
+
+                    case 5:
                         System.out.println("You ended turn " + turn + " now AI will make it's move. ");
-                        
+                        for(Countries country : countriesList){
+                            country.generateIncome();
+                        }
+
                         //Implement enemies' moves here.
 
                         turn ++;
-                        System.out.println("Now it's turn " + turn);
+                        System.out.println("Now it's turn " + turn + "!");
+
+                        System.out.println();
                         break;
 
                     default:
@@ -105,12 +131,7 @@ public class App {
             catch (NumberFormatException e) {
                 System.out.println("Invalid input. Please enter a number or 'End' to quit.");
             }
-
-
-
-
     }
-
     scanner.close();
 }
 }
