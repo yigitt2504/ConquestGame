@@ -33,24 +33,25 @@ public class Provinces {
         int cost = troops*100;
         if(owner.spendGold(cost)){
             troops += troops;
-            System.out.println("Troops trained in " + this.province_name + ", you have " + owner.getGold() + " gold left. ");
+            System.out.println("=====================================================\n");
+            System.out.println("Troops trained in " + this.province_name + ", " + owner.getName() + " has " + owner.getGold() + " gold left. ");
         }
     }
 
     public String attacking(Provinces attacked_province, int attackingTroops){
-        if(attackingTroops>attacked_province.troops){
+        if(attackingTroops > attacked_province.troops){
             this.troops -= attackingTroops;
             attacked_province.troops -= attackingTroops - attacked_province.troops;
-
             attacked_province.owner.removeProvince(attacked_province);
             attacked_province.owner = this.owner;
             this.owner.addProvince(attacked_province);
-            return("The province " + attacked_province.getProvinceName() + " is now conquered! ");
+            return("The province of " + attacked_province.getProvinceName() + " is now conquered! ");
         }
         else{
             attacked_province.troops -= attackingTroops;
             this.troops -= attackingTroops;
             return("The defenders have held their ground and won the battle! ");
+
         }
     }
 

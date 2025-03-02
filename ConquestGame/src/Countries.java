@@ -43,12 +43,15 @@ public class Countries {
             return true;
         }
         else{
+            System.out.println("=====================================================\n");
             System.out.println("You don't have enough gold! ");
+            System.out.println("=====================================================\n");
             return false;
         }
     }
 
     public void generateIncome(){
+        System.out.println("=====================================================\n");
         this.income = provincesOwned.size() * 100;
         this.gold += income;
         System.out.println(this.country_name + " earned " + income + " gold. Current balance is: " + this.gold);

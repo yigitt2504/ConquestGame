@@ -13,8 +13,7 @@ public class App {
         Provinces london = new Provinces("London", 1000, england);
         Provinces paris = new Provinces("Paris", 1000, france);
         Provinces york = new Provinces("York", 1000, england);
-
-
+        
         england.addProvince(york);
         england.addProvince(london);
         france.addProvince(paris);
@@ -22,8 +21,6 @@ public class App {
 
         london.addNeighbor(york);
         paris.addNeighbor(london);
-
-        //Add a mechanic to see the provinces' neighbors at will.
 
         List<Countries> countriesList = new ArrayList<>();
         countriesList.add(england);
@@ -37,11 +34,6 @@ public class App {
         for(Countries country : countriesList){
             if(selected_country.equalsIgnoreCase(country.getName())){
                 System.out.println("You are now in charge of " + country.getName());
-
-                System.out.println(country.getName() + " is in control of these provinces: ");
-                for(Provinces p : country.getProvincesOwned()){
-                    System.out.println(p.getProvinceName());
-                }
                 country_found = true;
                 break;
             }
@@ -54,15 +46,18 @@ public class App {
         boolean gameContinues = true;
         int turn = 1;
         while(gameContinues){
+            System.out.println("=====================================================\n");
             System.out.println("Turn " + turn);
             System.out.println("Choose your action. ");
             System.out.println("1 to view your provinces. ");
-            System.out.println("2 to view the situation in all nations. ");
-            System.out.println("3 to train more troops. ");
-            System.out.println("4 to attack. ");
-            System.out.println("5 to move your troops across your provinces. ");
-            System.out.println("6 to end turn. ");
+            System.out.println("2 to view the situation in the whole World. ");
+            System.out.println("3 to view neighboring provinces. ");
+            System.out.println("4 to train more troops. ");
+            System.out.println("5 to attack. ");
+            System.out.println("6 to move your troops across your provinces. ");
+            System.out.println("7 to end turn. ");
             System.out.println("'End' to end the game. ");
+            System.out.println("=====================================================\n");
             for(Countries country : countriesList){
                 if(selected_country.equalsIgnoreCase(country.getName())){
                     System.out.println("Your gold: " + country.getGold());
@@ -84,6 +79,7 @@ public class App {
                 int players_choice = Integer.parseInt(players_input);
                 switch(players_choice){
                     case 1:
+                        System.out.println("=====================================================\n");
                         System.out.println(selected_country + " now owns these provinces: "  );
                         for(Countries country : countriesList){
                             if(selected_country.equalsIgnoreCase(country.getName())){
@@ -96,16 +92,17 @@ public class App {
                         break;
 
                     case 2:
-                        System.out.println("Situation in all nations: ");
-                        for(Countries country : countriesList){
-                            System.out.println(country.getName() + " now controls: ");
-                            for(Provinces province : country.getProvincesOwned()){
-                                System.out.println("- " + province.getProvinceName());
-                            }
-                        }
+
+                        EnemyDecision.displaySituation(countriesList);
                         break;
 
                     case 3:
+
+                        EnemyDecision.displayNeighbors(countriesList);
+                        break;
+
+                    case 4:
+                        System.out.println("=====================================================\n");
                         System.out.println("Choose which province do you want to train your troops in? ");
                         String trainingProvince = scanner.nextLine();
                         System.out.println("How many troops do you want to train? ");
@@ -134,7 +131,8 @@ public class App {
                         }
                         break;
 
-                    case 4:
+                    case 5:
+                        System.out.println("=====================================================\n");
                         System.out.println("Choose a friendly province to attack from. ");
                         String attackingProvinceName = scanner.nextLine();
 
@@ -181,7 +179,8 @@ public class App {
                         System.out.println(battleResult);
                         break;
 
-                    case 5: 
+                    case 6:
+                        System.out.println("=====================================================\n");
                         System.out.println("Which province do you want to march your troops from? ");
                         String movingFromProvinceName = scanner.nextLine();
 
@@ -206,7 +205,7 @@ public class App {
                         int troopsToMarch = scanner.nextInt();
                         scanner.nextLine();
 
-                        if(troopsToMarch <= 0 && troopsToMarch < movingFromProvince.troops){
+                        if(troopsToMarch <= 0 && troopsToMarch > movingFromProvince.troops){
                             System.out.println("Invalid amount of troops! ");
                             break;
                         }
@@ -231,24 +230,24 @@ public class App {
                         movingFromProvince.troops -= troopsToMarch;
                         movingToProvince.troops += troopsToMarch;
 
-                        System.out.println("Your troops have marched " + movingFromProvince.getProvinceName() + " to " + movingToProvince.getProvinceName());
-
+                        System.out.println("Your troops have marched from " + movingFromProvince.getProvinceName() + " to " + movingToProvince.getProvinceName());
                         break;
 
-                    case 6:
-                    //_____________________________________________________________________________________________
-                        System.out.println("You ended turn " + turn + " now AI will make it's move. ");
+                    case 7:
+                        for(Countries country : countriesList){
+                            EnemyDecision.enemyMovement(countriesList, country, selected_country);
+                        }
+
+                        System.out.println("You ended turn " + turn + " now enemies will make their move. ");
                         for(Countries country : countriesList){
                             country.generateIncome();
-                            System.out.println(country.country_name + " earned " + country.income + " gold. Your new balance is: " + country.gold);
                         }
-                        //Implement enemies' moves here.
+
                         turn ++;
                         System.out.println("Now it's turn " + turn + "!");
-
                         System.out.println();
                         break;
-//________________________________________________________________________
+
                     default:
                         System.out.println("Invalid option, try again! ");
                         break;
