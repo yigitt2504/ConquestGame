@@ -48,14 +48,14 @@ public class Countries {
         }
     }
 
-    public int getIncome(){
-        return income;
-    }
-
     public void generateIncome(){
         this.income = provincesOwned.size() * 100;
         this.gold += income;
-        System.out.println(this.country_name + " earned " + income + " gold. Your new balance is: " + this.gold);
+        System.out.println(this.country_name + " earned " + income + " gold. Current balance is: " + this.gold);
+    }
+
+    public int getIncome(){
+        return income;
     }
 
 }

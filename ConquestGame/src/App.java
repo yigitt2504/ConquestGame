@@ -23,7 +23,7 @@ public class App {
         london.addNeighbor(york);
         paris.addNeighbor(london);
 
-        //Add a mechanic to see which province neighbors which.
+        //Add a mechanic to see the provinces' neighbors at will.
 
         List<Countries> countriesList = new ArrayList<>();
         countriesList.add(england);
@@ -52,16 +52,25 @@ public class App {
         }
         
         boolean gameContinues = true;
-        int turn = 0;
+        int turn = 1;
         while(gameContinues){
             System.out.println("Turn " + turn);
+            System.out.println("Choose your action. ");
             System.out.println("1 to view your provinces. ");
             System.out.println("2 to view the situation in all nations. ");
             System.out.println("3 to train more troops. ");
             System.out.println("4 to attack. ");
-            System.out.println("5 to end turn. ");
+            System.out.println("5 to move your troops across your provinces. ");
+            System.out.println("6 to end turn. ");
             System.out.println("'End' to end the game. ");
-            System.out.println("Choose your action. ");
+            for(Countries country : countriesList){
+                if(selected_country.equalsIgnoreCase(country.getName())){
+                    System.out.println("Your gold: " + country.getGold());
+                    if(turn>1){
+                        System.out.println("Your income: " + country.getIncome());
+                    }
+                }
+            }
             
             String players_input = scanner.nextLine();
 
@@ -126,26 +135,120 @@ public class App {
                         break;
 
                     case 4:
-                        System.out.println("");
+                        System.out.println("Choose a friendly province to attack from. ");
+                        String attackingProvinceName = scanner.nextLine();
 
-                        //The player needs to choose a friendly province and number of troops and then an enemy province to attack.
+                        Provinces attackingProvince = null;
+
+                        for(Countries country: countriesList){
+                            for(Provinces provinces : country.getProvincesOwned()){
+                                if(provinces.getProvinceName().equalsIgnoreCase(attackingProvinceName) && country.getName().equalsIgnoreCase(selected_country)){
+                                    attackingProvince = provinces;
+                                    break;
+                                }
+                            }
+                        }
+
+                        if(attackingProvince == null){
+                            System.out.println("The province you're trying to attack is invalid! ");
+                            break;
+                        }
+
+                        System.out.println("How many troops do you want to send? ");
+                        int attackingTroops = scanner.nextInt();
+                        scanner.nextLine();
+
+                        if(attackingTroops <= 0 || attackingTroops > attackingProvince.troops){
+                            System.out.println("Invalid troop number! ");
+                        }
+
+                        System.out.println("Choose an enemy province to attack: ");
+                        String attackedProvinceName = scanner.nextLine();
+
+                        Provinces attackedProvince = null;
+                        for(Provinces neighbor : attackingProvince.getNeighbors()){
+                            if(neighbor.getProvinceName().equalsIgnoreCase(attackedProvinceName) && !neighbor.owner.getName().equalsIgnoreCase(selected_country)){
+                                attackedProvince = neighbor;
+                                break;
+                            }
+                        }
+
+                        if(attackedProvince == null){
+                            System.out.println("Invalid enemy province! ");
+                        }
+                        
+                        String battleResult = attackingProvince.attacking(attackedProvince, attackingTroops);
+                        System.out.println(battleResult);
                         break;
 
-                    case 5:
+                    case 5: 
+                        System.out.println("Which province do you want to march your troops from? ");
+                        String movingFromProvinceName = scanner.nextLine();
+
+                        Provinces movingFromProvince = null;
+                        for(Countries country: countriesList){
+                            if(country.getName().equalsIgnoreCase(selected_country)){
+                                for(Provinces provinces : country.getProvincesOwned()){
+                                    if(provinces.getProvinceName().equalsIgnoreCase(movingFromProvinceName)){
+                                        movingFromProvince = provinces;
+                                        break;
+                                    }
+                                }
+                            }
+                        }
+
+                        if(movingFromProvince == null){
+                            System.out.println("Invalid province! ");
+                            break;
+                        }
+
+                        System.out.println("How many troops are you ordering to march from " + movingFromProvinceName + "? ");
+                        int troopsToMarch = scanner.nextInt();
+                        scanner.nextLine();
+
+                        if(troopsToMarch <= 0 && troopsToMarch < movingFromProvince.troops){
+                            System.out.println("Invalid amount of troops! ");
+                            break;
+                        }
+
+                        System.out.println("Where do you want to send the soldiers to? ");
+                        String movingToProvinceName = scanner.nextLine();
+
+                        Provinces movingToProvince = null;
+                        for(Provinces neighbor : movingFromProvince.getNeighbors()){
+                            if(neighbor.getProvinceName().equalsIgnoreCase(movingToProvinceName) && neighbor.owner.getName().equalsIgnoreCase(selected_country)){
+                                movingToProvince = neighbor;
+                                break;
+                            }
+                        }
+
+                        if(movingToProvince == null){
+                            System.out.println("Invalid province! You can only march your troops to a neighboring province that you own. ");
+                            System.out.println("You are either risking a clash with the enemy or you are trying to move your troops to a far away land. ");
+                            break;
+                        }
+
+                        movingFromProvince.troops -= troopsToMarch;
+                        movingToProvince.troops += troopsToMarch;
+
+                        System.out.println("Your troops have marched " + movingFromProvince.getProvinceName() + " to " + movingToProvince.getProvinceName());
+
+                        break;
+
+                    case 6:
+                    //_____________________________________________________________________________________________
                         System.out.println("You ended turn " + turn + " now AI will make it's move. ");
                         for(Countries country : countriesList){
                             country.generateIncome();
                             System.out.println(country.country_name + " earned " + country.income + " gold. Your new balance is: " + country.gold);
                         }
-
                         //Implement enemies' moves here.
-
                         turn ++;
                         System.out.println("Now it's turn " + turn + "!");
 
                         System.out.println();
                         break;
-
+//________________________________________________________________________
                     default:
                         System.out.println("Invalid option, try again! ");
                         break;

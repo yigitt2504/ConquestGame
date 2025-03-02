@@ -37,15 +37,20 @@ public class Provinces {
         }
     }
 
-    public String attacking(Provinces attacked_province, int troops){
-        if(troops>attacked_province.troops){
-            this.owner.removeProvince(attacked_province);
+    public String attacking(Provinces attacked_province, int attackingTroops){
+        if(attackingTroops>attacked_province.troops){
+            this.troops -= attackingTroops;
+            attacked_province.troops -= attackingTroops - attacked_province.troops;
+
+            attacked_province.owner.removeProvince(attacked_province);
             attacked_province.owner = this.owner;
             this.owner.addProvince(attacked_province);
-            return("The province is conquered!");
+            return("The province " + attacked_province.getProvinceName() + " is now conquered! ");
         }
         else{
-            return("The defenders have succeded!");
+            attacked_province.troops -= attackingTroops;
+            this.troops -= attackingTroops;
+            return("The defenders have held their ground and won the battle! ");
         }
     }
 
