@@ -1,5 +1,4 @@
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 public class Provinces {
     String province_name;
@@ -39,20 +38,31 @@ public class Provinces {
     }
 
     public String attacking(Provinces attacked_province, int attackingTroops){
-        if(attackingTroops > attacked_province.troops){
+        if (attackingTroops >attacked_province.troops) {
             this.troops -= attackingTroops;
-            attacked_province.troops -= attackingTroops - attacked_province.troops;
-            attacked_province.owner.removeProvince(attacked_province);
+            attacked_province.troops = 0;
+    
+            Iterator<Provinces> iterator = attacked_province.owner.getProvincesOwned().iterator();
+            while(iterator.hasNext()){
+                if(iterator.next().equals(attacked_province)){
+                    iterator.remove();
+                    break;
+                }
+            }
+
+            attacked_province.owner.getProvincesOwned().remove(attacked_province);
+            
             attacked_province.owner = this.owner;
             this.owner.addProvince(attacked_province);
-            return("The province of " + attacked_province.getProvinceName() + " is now conquered! ");
+    
+            return "The province of " + attacked_province.getProvinceName() + " is now conquered!";
         }
+
         else{
             attacked_province.troops -= attackingTroops;
             this.troops -= attackingTroops;
-            return("The defenders have held their ground and won the battle! ");
-
+            return "The defenders have held their ground and won the battle!";
         }
-    }
 
+    }
 }

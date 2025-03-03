@@ -27,26 +27,35 @@ public class EnemyDecision {
         }
     }
 
-    public static void enemyMovement(List<Countries> countriesList, Countries country, String playerCountryName){
-        if(country == null || country.getName().equalsIgnoreCase(playerCountryName)) return;
-
-        for(Provinces provinces : country.getProvincesOwned()){
+    public static void enemyMovement(List<Countries> countriesList, Countries country, String playerCountryName) {
+        if (country == null || country.getName().equalsIgnoreCase(playerCountryName)) return;
+        List<Provinces> provincesCopy = new ArrayList<>(country.getProvincesOwned());
+    
+        for(Provinces provinces : provincesCopy){
+            if (provinces == null) continue;
+    
             Random random = new Random();
             int random_number = random.nextInt(2);
-
+    
             if(random_number == 0){
                 int troopsToTrain = country.getGold() / 100;
                 if(troopsToTrain > 0){
                     provinces.trainingTroops(troopsToTrain);
-                    System.out.println(country.getName() + " reinforced " + provinces.getProvinceName() + " with " + troopsToTrain + " troops. ");
+                    System.out.println(country.getName() + " reinforced " + provinces.getProvinceName() + " with " + troopsToTrain + " troops.");
                 }
-            }
+            } 
             else{
-                for(Provinces neighbor : provinces.getNeighbors()){
-                    if(!neighbor.owner.getName().equalsIgnoreCase(country.getName()) && provinces.troops > neighbor.troops){
+                List<Provinces> neighborsCopy = new ArrayList<>(provinces.getNeighbors());
+    
+                for(Provinces neighbor : neighborsCopy){
+                    if(neighbor.owner == null || neighbor.owner.getName().equalsIgnoreCase(country.getName())){
+                        continue;
+                    }
+
+                    if(provinces.troops > neighbor.troops){
                         int attackingTroops = provinces.troops / 2;
                         String result = provinces.attacking(neighbor, attackingTroops);
-                        System.out.println(country.getName() + " attacked " + neighbor.getProvinceName() + " from " + provinces.getProvinceName() + "! ");
+                        System.out.println(country.getName() + " attacked " + neighbor.getProvinceName() + " from " + provinces.getProvinceName());
                         System.out.println(result);
                         break;
                     }

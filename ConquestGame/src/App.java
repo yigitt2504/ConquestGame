@@ -9,18 +9,16 @@ public class App {
         Countries england = new Countries("England");
         Countries france = new Countries("France");
 
-
-        Provinces london = new Provinces("London", 1000, england);
-        Provinces paris = new Provinces("Paris", 1000, france);
         Provinces york = new Provinces("York", 1000, england);
-        
+        Provinces london = new Provinces("London", 1000, england);
+        Provinces paris = new Provinces("Paris", 5000, france);
+
         england.addProvince(york);
         england.addProvince(london);
         france.addProvince(paris);
 
-
         london.addNeighbor(york);
-        paris.addNeighbor(london);
+        london.addNeighbor(paris);
 
         List<Countries> countriesList = new ArrayList<>();
         countriesList.add(england);
@@ -255,6 +253,7 @@ public class App {
             }
             catch (NumberFormatException e) {
                 System.out.println("Invalid input. Please enter a number or 'End' to quit.");
+                continue;
             }
     }
     scanner.close();

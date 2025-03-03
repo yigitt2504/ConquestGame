@@ -52,6 +52,12 @@ public class Countries {
 
     public void generateIncome(){
         System.out.println("=====================================================\n");
+        
+        if (provincesOwned == null || provincesOwned.isEmpty()) {
+            System.out.println(this.country_name + " no longer exists.");
+            return;
+        }
+
         this.income = provincesOwned.size() * 100;
         this.gold += income;
         System.out.println(this.country_name + " earned " + income + " gold. Current balance is: " + this.gold);
